@@ -18,6 +18,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from django.urls import include
 
 from personal.views import (
     home_screen_view
@@ -27,16 +28,23 @@ from account.views import (
     register_view,
     login_view,
     logout_view,
+    account_search_view,
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    # ---------------------------------------
     path('', home_screen_view, name='home'),
+    path('admin/', admin.site.urls),
+    path('account/', include('account.urls', namespace='account')),
+    path('friend/', include('friend.urls', namespace='friend')),
+
+    # ---------------------------------------
     # ----------------------------------------
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('register/', register_view, name='register'),
+
+    path('search/', account_search_view, name='search'),
+
 
     # ---------------------------------------------------------------------- #
 
