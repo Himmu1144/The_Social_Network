@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'personal',
     'account',
     'friend',
+    'public_chat',
 
     # Third Party Apps
     
@@ -50,6 +51,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
+    'django.contrib.humanize'
 ]
 
 MIDDLEWARE = [
@@ -80,7 +83,23 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ChatServerPlayground.wsgi.application'
+# WSGI_APPLICATION = 'ChatServerPlayground.wsgi.application'
+ASGI_APPLICATION = "ChatServerPlayground.routing.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels.layers.InMemoryChannelLayer',
+#     },
+# }
 
 
 # Database
@@ -163,3 +182,8 @@ if DEBUG:
 
 BASE_URL = "http://127.0.0.1:8000"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
+
+TIME_ZONE =  'Asia/Kolkata'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = False

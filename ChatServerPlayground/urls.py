@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from django.urls import include
 
+
 from personal.views import (
     home_screen_view
 )
@@ -42,6 +43,7 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('register/', register_view, name='register'),
+
 
     path('search/', account_search_view, name='search'),
 
