@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'account',
     'friend',
     'public_chat',
+    'chat',
+    'notification',
 
     # Third Party Apps
     

@@ -171,7 +171,7 @@ def account_search_view(request, *args, **kwargs):
                 auth_user_friend_list = FriendList.objects.filter(user=user).first()
                 
                 for account in search_results:
-                    accounts.append((account, auth_user_friend_list.is_mutual(account)))
+                    accounts.append((account, auth_user_friend_list.is_mutual_friend(account)))
                 context['accounts'] = accounts
             else:
                 for account in search_results:

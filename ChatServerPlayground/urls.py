@@ -36,6 +36,7 @@ urlpatterns = [
     path('', home_screen_view, name='home'),
     path('admin/', admin.site.urls),
     path('account/', include('account.urls', namespace='account')),
+    path('chat/', include('chat.urls', namespace='chat')),
     path('friend/', include('friend.urls', namespace='friend')),
 
     # ---------------------------------------

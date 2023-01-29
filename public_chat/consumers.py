@@ -1,18 +1,15 @@
-from django.core.serializers.python import Serializer
 from django.core.paginator import Paginator
 from django.core.serializers import serialize
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
 import json
-from django.contrib.auth import get_user_model
-from django.contrib.humanize.templatetags.humanize import naturaltime, naturalday
 from django.utils import timezone
-from datetime import datetime
+from chat.exceptions import ClientError
+from chat.utils import calculate_timestamp
 
 from public_chat.constants import *
 from public_chat.models import PublicChatRoom, PublicRoomChatMessage
-
-User = get_user_model()
+from chat.utils import LazyRoomChatMessageEncoder
 
 # Example taken from:
 # https://github.com/andrewgodwin/channels-examples/blob/master/multichat/chat/consumers.py
@@ -304,53 +301,17 @@ def get_room_chat_messages(room, page_number):
 		return None
 
 
-class ClientError(Exception):
-    """
-    Custom exception class that is caught by the websocket receive()
-    handler and translated into a send back to the client.
-    """
-    def __init__(self, code, message):
-        super().__init__(code)
-        self.code = code
-        if message:
-        	self.message = message
-
-
-
-def calculate_timestamp(timestamp):
-    """
-    1. Today or yesterday:
-        - EX: 'today at 10:56 AM'
-        - EX: 'yesterday at 5:19 PM'
-    2. other:
-        - EX: 05/06/2020
-        - EX: 12/28/2020
-    """
-    ts = ""
-    # Today or yesterday
-    if (naturalday(timestamp) == "today") or (naturalday(timestamp) == "yesterday"):
-        str_time = datetime.strftime(timestamp, "%I:%M %p")
-        str_time = str_time.strip("0")
-        ts = f"{naturalday(timestamp)} at {str_time}"
-    # other days
-    else:
-        str_time = datetime.strftime(timestamp, "%m/%d/%Y")
-        ts = f"{str_time}"
-    return str(ts)
-
-
-class LazyRoomChatMessageEncoder(Serializer):
-	def get_dump_object(self, obj):
-		dump_object = {}
-		dump_object.update({'msg_type': MSG_TYPE_MESSAGE})
-		dump_object.update({'user_id': str(obj.user.id)})
-		dump_object.update({'msg_id': str(obj.id)})
-		dump_object.update({'username': str(obj.user.username)})
-		dump_object.update({'message': str(obj.content)})
-		dump_object.update({'profile_image': str(obj.user.profile_image.url)})
-		dump_object.update({'natural_timestamp': calculate_timestamp(obj.timestamp)})
-		return dump_object
-
+# class LazyRoomChatMessageEncoder(Serializer):
+# 	def get_dump_object(self, obj):
+# 		dump_object = {}
+# 		dump_object.update({'msg_type': MSG_TYPE_MESSAGE})
+# 		dump_object.update({'user_id': str(obj.user.id)})
+# 		dump_object.update({'msg_id': str(obj.id)})
+# 		dump_object.update({'username': str(obj.user.username)})
+# 		dump_object.update({'message': str(obj.content)})
+# 		dump_object.update({'profile_image': str(obj.user.profile_image.url)})
+# 		dump_object.update({'natural_timestamp': calculate_timestamp(obj.timestamp)})
+# 		return dump_object
 
 
 	 
